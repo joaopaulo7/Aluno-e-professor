@@ -76,18 +76,24 @@ class Tartaruga:
 #MAIN
 def main() :
     rd.seed()
-    numAlunos = int(input("Numero de alunos(recomendado menos de 60):"))
-    numIteracoes = int(input("Numero de interçoes totais(recomendado mais de 500):"))
-    pctIteracoes = int(input("Porcentagem de interçoes com professores(0 a 100):"))
-    limIteracoes = int(input("Limite de interçoes com professores:"))
+    numAlunos = 30#int(input("Numero de alunos(recomendado menos de 60):"))
+    numIteracoes = 1000#int(input("Numero de interçoes totais(recomendado mais de 500):"))
+    pctIteracoes = 10#int(input("Porcentagem de interçoes com professores(0 a 100):"))
+    limIteracoes = 10#int(input("Limite de interçoes com professores:"))
 
-    professor =  [rd.randint(-1000, 1000), rd.randint(-1000, 1000)]
+    centro = trl.Turtle()
+    centro.shape('circle')
+    centro.setpos([0,0])
+    centro.turtlesize(0.5)
+    centro.color('white')
+    
+    professor =  [rd.randint(1, 10)+100, rd.randint(1, 10)]
     tartProf = trl.Turtle()
     tartProf.radians()
     tartProf.color('yellow')
-    tartProf.penup()
-    tartProf.right(np.arctan(professor[0]/professor[1]))
-    tartProf.setpos([rd.randint(-256, 256), rd.randint(-256, 256)])
+    tartProf.pendown()
+    tartProf.setpos(0, 10/(professor[1]/np.linalg.norm(professor)))
+    tartProf.left(np.arccos(professor[0]/np.linalg.norm(professor)))
     
     alunos = []
     
@@ -96,15 +102,14 @@ def main() :
     s.delay(0)
 
     for i in range(numAlunos):
-        alunoVet =  np.array([rd.randint(-100, 100), rd.randint(-100, 100)])
+        alunoVet =  np.array([rd.randint(1, 100), rd.randint(1, 100)])
         alunoVet = alunoVet/np.linalg.norm(alunoVet)
         
         tart = trl.Turtle()
         tart.radians()
         tart.color('white')
         tart.penup()
-        tart.setpos([rd.randint(-256, 256), rd.randint(-256, 256)])
-        tart.right(np.arctan(alunoVet[0]/alunoVet[1]))
+        tart.setpos(0, 10/(alunoVet[1]/np.linalg.norm(alunoVet)))
         
         alunos.append(Tartaruga(tart, alunoVet))
         
@@ -121,53 +126,29 @@ def main() :
     for i in range(numIteracoes):
         
         for j in  range(numAlunos):
-            
-            if(alunos[j].tartaruga.xcor() < -s.screensize()[0]/2 or alunos[j].tartaruga.ycor() < -s.screensize()[1]/2):
-                if(alunos[j].tartaruga.xcor() < - s.screensize()[0]/2 and alunos[j].tartaruga.ycor() < - s.screensize()[1]/2):
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor() + s.screensize()[0], alunos[j].tartaruga.ycor() + s.screensize()[1]])
-                elif(alunos[j].tartaruga.ycor() < -s.screensize()[1]/2):
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor(), alunos[j].tartaruga.ycor() + s.screensize()[1]])
-                else:
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor() + s.screensize()[0], alunos[j].tartaruga.ycor()])
-            
-            if(alunos[j].tartaruga.xcor() > s.screensize()[0]/2 or alunos[j].tartaruga.ycor() > s.screensize()[1]/2):
-                if(alunos[j].tartaruga.xcor() > s.screensize()[0]/2 and alunos[j].tartaruga.ycor() > s.screensize()[1]/2):
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor() - s.screensize()[0], alunos[j].tartaruga.ycor() - s.screensize()[1]])
-                elif(alunos[j].tartaruga.ycor() > s.screensize()[1]/2):
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor(), alunos[j].tartaruga.ycor() - s.screensize()[1]])
-                else:
-                    setposi(alunos[j].tartaruga, [alunos[j].tartaruga.xcor() - s.screensize()[0], alunos[j].tartaruga.ycor()])
+            alunos[j].tartaruga.right(np.arcsin(alunos[j].vetor[1]))
             alunos[j].tartaruga.fd(10)
             
-        if(tartProf.xcor() < -s.screensize()[0]/2 or tartProf.ycor() < -s.screensize()[1]/2):
-            if(tartProf.xcor() < - s.screensize()[0]/2 and tartProf.ycor() < - s.screensize()[1]/2):
-                setposi(tartProf, [tartProf.xcor() + s.screensize()[0], tartProf.ycor() + s.screensize()[1]])
-            elif(tartProf.ycor() < -s.screensize()[1]/2):
-                setposi(tartProf, [tartProf.xcor(), tartProf.ycor() + s.screensize()[1]])
-            else:
-                setposi(tartProf, [tartProf.xcor() + s.screensize()[0], tartProf.ycor()])
-        
-        if(tartProf.xcor() > s.screensize()[0]/2 or tartProf.ycor() > s.screensize()[1]/2):
-            if(tartProf.xcor() > s.screensize()[0]/2 and tartProf.ycor() > s.screensize()[1]/2):
-                setposi(tartProf, [tartProf.xcor() - s.screensize()[0], tartProf.ycor() - s.screensize()[1]])
-            elif(tartProf.ycor() > s.screensize()[1]/2):
-                setposi(tartProf, [tartProf.xcor(), tartProf.ycor() - s.screensize()[1]])
-            else:
-                setposi(tartProf, [tartProf.xcor() - s.screensize()[0], tartProf.ycor()])
+        tartProf.right(np.arccos(professor[0]/np.linalg.norm(professor)))
         tartProf.fd(10)
         
         
         prf = rd.randint(-1,99)
         
         if(prf < pctIteracoes and limIteracoes > 0):
+            
             k = rd.randint(0, numAlunos - 1)
             alunos[k].tartaruga.color('pink')
             res = iteracao(professor, alunos[k].vetor)
-            alunos[k].vetor = res
-            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arctan(res[0]/res[1]))
+            
+            alunos[k].tartaruga.goto((alunos[k].tartaruga.pos()/np.linalg.norm(alunos[k].tartaruga.pos()))*(10/(res[1]/np.linalg.norm(res))))
+            alunos[k].tartaruga.right( -np.arccos(0) + anguloEntrVet(alunos[k].vetor, alunos[k].tartaruga.pos()))
+            
+            alunos[k].vetor[0], alunos[k].vetor[1] = res[0], res[1]
+            
             limIteracoes -= 1
             
-        else:
+        '''else:
             k = rd.randint(0, numAlunos - 1)
             j = rd.randint(0, numAlunos - 1)
             
@@ -193,6 +174,6 @@ def main() :
         
     plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)')
     plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
-    plt.show()
+    plt.show()'''
 
 main()
