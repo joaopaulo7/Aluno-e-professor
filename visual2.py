@@ -55,10 +55,10 @@ def plotLinha(x, y, legenda = "linha1") :
 
 def anguloEntrVet(a, b):
     c = (a[0]*b[0] + a[1]*b[1])/(np.linalg.norm(a) * np.linalg.norm(b))
-    if(c  < -1):
-        c = -1
-    elif(c > 1):
+    if(c > 1):
         c = 1
+    elif(c < -1):
+        c = -1
     return np.arccos(c)
 
 def iteracao(aluno0, aluno1):
@@ -76,10 +76,10 @@ class Tartaruga:
 #MAIN
 def main() :
     rd.seed()
-    numAlunos = 30#int(input("Numero de alunos(recomendado menos de 60):"))
-    numIteracoes = 1000#int(input("Numero de interçoes totais(recomendado mais de 500):"))
-    pctIteracoes = 10#int(input("Porcentagem de interçoes com professores(0 a 100):"))
-    limIteracoes = 10#int(input("Limite de interçoes com professores:"))
+    numAlunos = int(input("Numero de alunos(recomendado menos de 60):"))
+    numIteracoes = int(input("Numero de interçoes totais(recomendado mais de 500):"))
+    pctIteracoes = int(input("Porcentagem de interçoes com professores(0 a 100):"))
+    limIteracoes = int(input("Limite de interçoes com professores:"))
 
     centro = trl.Turtle()
     centro.shape('circle')
@@ -87,13 +87,13 @@ def main() :
     centro.turtlesize(0.5)
     centro.color('white')
     
-    professor =  [rd.randint(1, 10)+100, rd.randint(1, 10)]
+    professor =  [rd.randint(-10, 10)+40, rd.randint(1, 5)]
     tartProf = trl.Turtle()
     tartProf.radians()
     tartProf.color('yellow')
     tartProf.pendown()
     tartProf.setpos(0, 10/(professor[1]/np.linalg.norm(professor)))
-    tartProf.left(np.arccos(professor[0]/np.linalg.norm(professor)))
+    tartProf.left(np.arccos(professor[0]/np.linalg.norm(professor))/2)
     
     alunos = []
     
@@ -102,7 +102,7 @@ def main() :
     s.delay(0)
 
     for i in range(numAlunos):
-        alunoVet =  np.array([rd.randint(1, 100), rd.randint(1, 100)])
+        alunoVet =  np.array([rd.randint(1, 100), rd.randint(1, 10)])
         alunoVet = alunoVet/np.linalg.norm(alunoVet)
         
         tart = trl.Turtle()
@@ -124,9 +124,11 @@ def main() :
         
 
     for i in range(numIteracoes):
+        if(i > 160):
+            tartProf.penup()
         
         for j in  range(numAlunos):
-            alunos[j].tartaruga.right(np.arcsin(alunos[j].vetor[1]))
+            alunos[j].tartaruga.right(np.arccos(alunos[j].vetor[0]))
             alunos[j].tartaruga.fd(10)
             
         tartProf.right(np.arccos(professor[0]/np.linalg.norm(professor)))
@@ -141,23 +143,49 @@ def main() :
             alunos[k].tartaruga.color('pink')
             res = iteracao(professor, alunos[k].vetor)
             
+            alunos[k].tartaruga.ht()
+            
             alunos[k].tartaruga.goto((alunos[k].tartaruga.pos()/np.linalg.norm(alunos[k].tartaruga.pos()))*(10/(res[1]/np.linalg.norm(res))))
-            alunos[k].tartaruga.right( -np.arccos(0) + anguloEntrVet(alunos[k].vetor, alunos[k].tartaruga.pos()))
+            alunos[k].tartaruga.right(alunos[k].tartaruga.heading())
+            if(alunos[k].tartaruga.ycor() > 0):
+                alunos[k].tartaruga.left(anguloEntrVet([1,0], alunos[k].tartaruga.pos()))
+            else:
+                alunos[k].tartaruga.right(anguloEntrVet([1,0], alunos[k].tartaruga.pos()))
+            alunos[k].tartaruga.right(np.pi/2 - np.arccos(res[0])/2)
             
             alunos[k].vetor[0], alunos[k].vetor[1] = res[0], res[1]
-            
             limIteracoes -= 1
             
-        '''else:
+            alunos[k].tartaruga.st()
+            
+        else:
             k = rd.randint(0, numAlunos - 1)
             j = rd.randint(0, numAlunos - 1)
             
             res = iteracao(alunos[j].vetor, alunos[k].vetor)
             
+            alunos[k].tartaruga.ht()
+            alunos[j].tartaruga.ht()
+            
+            alunos[k].tartaruga.goto((alunos[k].tartaruga.pos()/np.linalg.norm(alunos[k].tartaruga.pos()))*(10/(res[1]/np.linalg.norm(res))))
+            alunos[k].tartaruga.right(alunos[k].tartaruga.heading())
+            if(alunos[k].tartaruga.ycor() > 0):
+                alunos[k].tartaruga.left(anguloEntrVet([1,0], alunos[k].tartaruga.pos()))
+            else:
+                alunos[k].tartaruga.right(anguloEntrVet([1,0], alunos[k].tartaruga.pos()))
+            alunos[k].tartaruga.right(np.pi/2 - np.arccos(res[0])/2)
+            
+            alunos[j].tartaruga.goto((alunos[j].tartaruga.pos()/np.linalg.norm(alunos[j].tartaruga.pos()))*(10/(res[1]/np.linalg.norm(res))))
+            alunos[j].tartaruga.right(alunos[j].tartaruga.heading())
+            if(alunos[j].tartaruga.ycor() > 0):
+                alunos[j].tartaruga.left(anguloEntrVet([1,0], alunos[j].tartaruga.pos()))
+            else:
+                alunos[j].tartaruga.right(anguloEntrVet([1,0], alunos[j].tartaruga.pos()))
+            alunos[j].tartaruga.right(np.pi/2 - np.arccos(res[0])/2)
+            
             alunos[j].vetor, alunos[k].vetor = res, res
-
-            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arctan(res[0]/res[1]))
-            alunos[j].tartaruga.right(alunos[j].tartaruga.heading() + np.arctan(res[0]/res[1]))
+            alunos[k].tartaruga.st()
+            alunos[j].tartaruga.st()
 
         soma = 0.0
 
@@ -174,6 +202,6 @@ def main() :
         
     plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)')
     plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
-    plt.show()'''
+    plt.show()
 
 main()
