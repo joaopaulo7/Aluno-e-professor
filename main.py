@@ -45,6 +45,12 @@ def plotar(x, y, legenda = "linha1", xt = "x", yt ="y", titulo = "") :
       
     plt.legend() 
 
+def plotLinha(x, y, legenda = "linha1") :
+    
+    plt.plot(x, y, label = legenda) 
+      
+    plt.legend() 
+
 def anguloEntrVet(a, b):
     c = (a[0]*b[0] + a[1]*b[1])/(np.linalg.norm(a) * np.linalg.norm(b))
     if(c  < -1):
@@ -63,9 +69,10 @@ def iteracao(aluno0, aluno1):
 #MAIN
 def main() :
     rd.seed()
-    numAlunos = 50#int(input("Numero de alunos:"))
-    numIteracoes = 1000#int(input("Numero de interçoes totais:"))
-    pctIteracoes = 30#int(input("Porcentagem de interçoes com professores:"))
+    numAlunos = int(input("Numero de alunos(recomendado menos de 60):"))
+    numIteracoes = int(input("Numero de interçoes totais(recomendado mais de 500):"))
+    pctIteracoes = int(input("Porcentagem de interçoes com professores(0 a 100):"))
+    limIteracoes = int(input("Limite de interçoes com professores:"))
 
     professor =  [20, 13]
 
@@ -77,6 +84,7 @@ def main() :
         alunos.append(alunoVet)
         
     medAngulos= []
+    medAlPro = []
         
     soman = np.math.factorial(numAlunos)/(2*np.math.factorial(numAlunos - 2))
 
@@ -84,7 +92,7 @@ def main() :
     for i in range(numIteracoes):
         
         prf = rd.randint(-1,99)
-        if( prf < pctIteracoes):
+        if(prf < pctIteracoes and limIteracoes > 0):
             k = rd.randint(0, numAlunos - 1)
             res = iteracao(professor, alunos[k])
             alunos[k] = res
@@ -102,7 +110,17 @@ def main() :
             for i1 in range(i0 + 1, numAlunos):
                 soma = soma + anguloEntrVet(alunos[i0], alunos[i1])
         medAngulos.append(soma/soman)
-    plotar(range(numIteracoes), medAngulos)
+        
+        soma = 0.0
+        for i0 in range(numAlunos):
+            soma = soma + anguloEntrVet(alunos[i0], professor)
+            
+        medAlPro.append(soma/numAlunos)
+        
+        print(str(i+1)+'/'+str(numIteracoes))
+    
+    plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)')
+    plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
     plt.show()
 
 main()
