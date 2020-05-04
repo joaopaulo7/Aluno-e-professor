@@ -157,7 +157,7 @@ def main() :
         tartProf.fd(10)
         
         
-        prf = rd.randint(-1,99)
+        prf = rd.randint(0,99)
         
         if(prf < pctIteracoes and limIteracoes > 0):
             k = rd.randint(0, numAlunos - 1)
