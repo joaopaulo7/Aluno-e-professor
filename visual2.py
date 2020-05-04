@@ -135,12 +135,12 @@ def main() :
         tartProf.fd(10)
         
         
-        prf = rd.randint(-1,99)
+        prf = rd.randint(0,99)
         
         if(prf < pctIteracoes and limIteracoes > 0):
             
             k = rd.randint(0, numAlunos - 1)
-            alunos[k].tartaruga.color('pink')
+            alunos[k].tartaruga.color('red')
             res = iteracao(professor, alunos[k].vetor)
             
             alunos[k].tartaruga.ht()
@@ -169,6 +169,7 @@ def main() :
             
             alunos[k].tartaruga.goto((alunos[k].tartaruga.pos()/np.linalg.norm(alunos[k].tartaruga.pos()))*(10/(res[1]/np.linalg.norm(res))))
             alunos[k].tartaruga.right(alunos[k].tartaruga.heading())
+            
             if(alunos[k].tartaruga.ycor() > 0):
                 alunos[k].tartaruga.left(anguloEntrVet([1,0], alunos[k].tartaruga.pos()))
             else:
@@ -192,13 +193,13 @@ def main() :
         for i0 in range(numAlunos):
             for i1 in range(i0 + 1, numAlunos):
                 soma = soma + abs(anguloEntrVet(alunos[i0].vetor, alunos[i1].vetor))
-        medAngulos.append(soma/soman)
+        medAngulos.append(4*soma/soman)
         
         soma = 0.0
         for i0 in range(numAlunos):
             soma = soma + abs(anguloEntrVet(alunos[i0].vetor, professor))
             
-        medAlPro.append(soma/numAlunos)
+        medAlPro.append(4*soma/numAlunos)
         
     plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)')
     plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
