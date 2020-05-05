@@ -86,7 +86,7 @@ def main() :
     tartProf.radians()
     tartProf.color('yellow')
     tartProf.penup()
-    tartProf.right(np.arctan(professor[0]/professor[1]))
+    tartProf.right(np.arccos(professor[0]/ np.linalg.norm(professor)))
     tartProf.setpos([rd.randint(-256, 256), rd.randint(-256, 256)])
     
     alunos = []
@@ -104,7 +104,7 @@ def main() :
         tart.color('white')
         tart.penup()
         tart.setpos([rd.randint(-256, 256), rd.randint(-256, 256)])
-        tart.right(np.arctan(alunoVet[0]/alunoVet[1]))
+        tart.right(np.arccos(alunoVet[0]))
         
         alunos.append(Tartaruga(tart, alunoVet))
         
@@ -161,10 +161,10 @@ def main() :
         
         if(prf < pctIteracoes and limIteracoes > 0):
             k = rd.randint(0, numAlunos - 1)
-            alunos[k].tartaruga.color('pink')
+            alunos[k].tartaruga.color('red')
             res = iteracao(professor, alunos[k].vetor)
             alunos[k].vetor = res
-            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arctan(res[0]/res[1]))
+            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arccos(res[0]))
             limIteracoes -= 1
             
         else:
@@ -175,8 +175,8 @@ def main() :
             
             alunos[j].vetor, alunos[k].vetor = res, res
 
-            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arctan(res[0]/res[1]))
-            alunos[j].tartaruga.right(alunos[j].tartaruga.heading() + np.arctan(res[0]/res[1]))
+            alunos[k].tartaruga.right(alunos[k].tartaruga.heading() + np.arccos(res[0]))
+            alunos[j].tartaruga.right(alunos[j].tartaruga.heading() + np.arccos(res[0]))
 
         soma = 0.0
 
