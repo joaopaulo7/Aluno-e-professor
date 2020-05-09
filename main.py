@@ -67,14 +67,16 @@ def iteracao(aluno0, aluno1):
 
 
 #MAIN
-def main() :
-    rd.seed()
-    numAlunos = int(input("Numero de alunos(recomendado menos de 60):"))
+def main(numAlunos, numIteracoes, pctIteracoes, limIteracoes, xprof, yprof) :
+    rd.seed(1)
+    '''numAlunos = int(input("Numero de alunos(recomendado menos de 60):"))
     numIteracoes = int(input("Numero de interçoes totais(recomendado mais de 500):"))
     pctIteracoes = int(input("Porcentagem de interçoes com professores(0 a 100):"))
     limIteracoes = int(input("Limite de interçoes com professores:"))
-
-    professor =  [20, 13]
+    '''
+    o= 0
+    
+    professor =  [xprof, yprof]
 
     alunos = []
 
@@ -92,10 +94,11 @@ def main() :
     for i in range(numIteracoes):
         
         prf = rd.randint(-1,99)
-        if(prf < pctIteracoes and limIteracoes > 0):
+        if(prf < pctIteracoes and limIteracoes != o):
             k = rd.randint(0, numAlunos - 1)
             res = iteracao(professor, alunos[k])
             alunos[k] = res
+            o += 1
             
         else:
             k = rd.randint(0, numAlunos - 1)
@@ -106,21 +109,46 @@ def main() :
 
         soma = 0.0
 
-        for i0 in range(numAlunos):
+        '''for i0 in range(numAlunos):
             for i1 in range(i0 + 1, numAlunos):
                 soma = soma + anguloEntrVet(alunos[i0], alunos[i1])
         medAngulos.append(soma/soman)
-        
+        '''
         soma = 0.0
         for i0 in range(numAlunos):
             soma = soma + anguloEntrVet(alunos[i0], professor)
-            
-        medAlPro.append(soma/numAlunos)
         
-        print(str(i+1)+'/'+str(numIteracoes))
-    
-    plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)')
-    plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
-    plt.show()
+        
+        #medAlPro.append(soma/numAlunos)
+        if(soma/numAlunos < 0.05):
+            return i;
+        
+    return numIteracoes
+    #plotar(range(numIteracoes), medAngulos, 'diferença entre alunos', 'iteraçoes', 'diferença(rad)', 'difereça com ' +str(round(np.linalg.norm(professor), 3))+' "força" do professor ')
+    #plotLinha(range(numIteracoes), medAlPro, 'diferença entre alunos e professor')
 
-main()
+
+numAlunos = 60
+numIteracoes = 1000
+pctIteracoes = 10
+
+lista = []
+listax = [[], [], []]
+listax[0].append(np.sqrt(0.5))
+listax[1].append(np.sqrt(0.5))
+listax[2].append(1)
+
+for i in range(1, 101):
+    p = (listax[2][i-1]+1)/listax[2][i-1]
+    listax[0].append(listax[0][i-1]*p)
+    listax[1].append(listax[1][i-1]*p)
+    lista.append(main(numAlunos, numIteracoes, pctIteracoes, 1000, listax[0][i], listax[1][i]))
+    listax[2].append(round(np.sqrt(listax[0][i]**2 + listax[1][i]**2)))
+    print(listax[2][i])
+    print(str(i+1)+'/100')
+
+
+plotar(listax[2][1:], lista, 'numero de iteraçoes', 'valores de froça', 'diferença(rad)', 'iteraçoes ate 0.05 com forças diferentes')
+
+plt.savefig('Gráficos/gráfico -'+str(numAlunos)+' alunos -'+str(numIteracoes)+' iteraçoes - '+str(pctIteracoes)+' interacoes - '+str(i)+' interaçoes com professor.png')
+plt.close()
